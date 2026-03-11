@@ -5,7 +5,7 @@ import './styles/index.css';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/myCodepen">
       <div className="min-h-screen bg-gray-50">
         <Navigation />
         <Routes>

@@ -28,7 +28,7 @@ export const ListPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [itemsPerPage] = useState(9);
 
   const loadCases = async (page: number, query: string = '') => {
@@ -88,24 +88,16 @@ export const ListPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">案例广场</h1>
-          <p className="text-gray-500 mt-1">发现、分享和学习前端交互案例</p>
-        </div>
-      </header> */}
-
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-8">
         {/* Search Bar */}
-        <div className="mb-8">
+        <div className="mb-4 sm:mb-8">
           <input
             type="text"
             value={searchQuery}
             onChange={handleSearchChange}
             placeholder="搜索案例..."
-            className="w-full px-4 py-3 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+            className="w-full px-4 py-2 sm:py-3 text-base sm:text-lg border border-gray-300 rounded-lg sm:rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
           />
         </div>
 
@@ -113,11 +105,11 @@ export const ListPage: React.FC = () => {
         {loading ? (
           <Loading text="加载中..." />
         ) : cases.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-gray-500 text-xl">没有找到相关案例</p>
+          <div className="text-center py-12 sm:py-16">
+            <p className="text-gray-500 text-base sm:text-xl">没有找到相关案例</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {cases.map((caseItem) => (
               <div
                 key={caseItem.id}
@@ -130,24 +122,24 @@ export const ListPage: React.FC = () => {
                 >
                   <TrashIcon className="h-5 w-5" />
                 </button>
-                <div className="h-48 bg-white overflow-hidden">
+                <div className="h-36 sm:h-48 bg-white overflow-hidden">
                   <CardPreview code={caseItem.code} />
                 </div>
-                <div className="p-5">
-                  <h3 className="font-semibold text-lg text-gray-900 truncate mb-2">
+                <div className="p-3 sm:p-5">
+                  <h3 className="font-semibold text-base sm:text-lg text-gray-900 truncate mb-1 sm:mb-2">
                     {caseItem.title}
                   </h3>
-                  <p className="text-sm text-gray-500">
-                    发布于 {formatDate(caseItem.create_time)}
+                  <p className="text-xs sm:text-sm text-gray-500">
+                    {formatDate(caseItem.create_time)}
                   </p>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       navigate(`/edit/${caseItem.id}`);
                     }}
-                    className="absolute bottom-4 right-4 z-10 p-1.5 bg-white rounded-full text-gray-500 hover:bg-blue-100 hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 z-10 p-1 sm:p-1.5 bg-white rounded-full text-gray-500 hover:bg-blue-100 hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity"
                   >
-                    <PencilIcon className="h-5 w-5" />
+                    <PencilIcon className="h-4 sm:h-5 w-4 sm:w-5" />
                   </button>
                 </div>
               </div>
@@ -157,7 +149,7 @@ export const ListPage: React.FC = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="mt-12">
+          <div className="mt-8 sm:mt-12">
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

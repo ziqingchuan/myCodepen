@@ -159,50 +159,50 @@ export const EditPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      <header className="flex items-center justify-between p-4 bg-white border-b border-gray-200">
-        <h1 className="text-xl font-bold">编辑案例</h1>
-        <div className="flex items-center gap-4">
+      <header className="flex items-center justify-between p-2 sm:p-4 bg-white border-b border-gray-200">
+        <h1 className="text-base sm:text-xl font-bold">编辑案例</h1>
+        <div className="flex items-center gap-2 sm:gap-4">
           <button
             onClick={() => {
               clearSavedCode();
               navigate(`/detail/${id}`);
             }}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            className="px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
           >
             取消
           </button>
           <button
             onClick={handleUpdate}
             disabled={isUpdating || !!titleError || !!previewError}
-            className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:bg-gray-400"
+            className="px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:bg-gray-400"
           >
-            {isUpdating ? '更新中...' : '确认更新'}
+            {isUpdating ? '更新中...' : '保存'}
           </button>
         </div>
       </header>
 
-      <main className="flex-1 p-4 flex flex-col gap-4">
+      <main className="flex-1 p-2 sm:p-4 flex flex-col gap-2 sm:gap-4">
         <input
           type="text"
           value={title}
           onChange={handleTitleChange}
           placeholder="请输入案例标题（2-50字）"
           maxLength={50}
-          className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${titleError ? 'border-red-500 ring-red-500' : 'border-gray-300 ring-blue-500'}`}
+          className={`w-full px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 ${titleError ? 'border-red-500 ring-red-500' : 'border-gray-300 ring-blue-500'}`}
         />
-        {titleError && <p className="text-red-500 text-sm">{titleError}</p>}
+        {titleError && <p className="text-red-500 text-xs sm:text-sm">{titleError}</p>}
 
-        <PanelGroup direction="horizontal" className="h-[calc(100vh-180px)]">
+        <PanelGroup direction="horizontal" className="h-[calc(100vh-120px)] sm:h-[calc(100vh-140px)]">
           {isCodeVisible && (
             <Panel defaultSize={50} minSize={10}>
               <div className="flex flex-col h-full">
-                <header className="flex items-center justify-between p-2 bg-gray-100 border-b border-gray-300 shrink-0">
-                  <span className="font-semibold text-sm">代码区</span>
-                  <div className="flex items-center gap-2">
-                    <button onClick={handleCopyCode} className="p-1.5 text-gray-600 hover:bg-gray-200 rounded">
+                <header className="flex items-center justify-between p-1.5 sm:p-2 bg-gray-100 border-b border-gray-300 shrink-0">
+                  <span className="font-semibold text-xs sm:text-sm">代码区</span>
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <button onClick={handleCopyCode} className="p-1 sm:p-1.5 text-gray-600 hover:bg-gray-200 rounded">
                       <ClipboardDocumentIcon className="h-4 w-4" />
                     </button>
-                    <button onClick={() => setIsPreviewVisible(!isPreviewVisible)} className="p-1.5 text-gray-600 hover:bg-gray-200 rounded">
+                    <button onClick={() => setIsPreviewVisible(!isPreviewVisible)} className="p-1 sm:p-1.5 text-gray-600 hover:bg-gray-200 rounded">
                       {isPreviewVisible ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
                     </button>
                   </div>
@@ -212,14 +212,14 @@ export const EditPage: React.FC = () => {
             </Panel>
           )}
           {isCodeVisible && isPreviewVisible && (
-            <PanelResizeHandle className="w-2 bg-gray-200 hover:bg-gray-300 cursor-col-resize" />
+            <PanelResizeHandle className="w-1 sm:w-2 bg-gray-200 hover:bg-gray-300 cursor-col-resize" />
           )}
           {isPreviewVisible && (
             <Panel defaultSize={50} minSize={10}>
               <div className="flex flex-col h-full">
-                <header className="flex items-center justify-between p-2 bg-gray-100 border-b border-gray-300 shrink-0">
-                  <span className="font-semibold text-sm">预览区</span>
-                  <button onClick={() => setIsCodeVisible(!isCodeVisible)} className="p-1.5 text-gray-600 hover:bg-gray-200 rounded">
+                <header className="flex items-center justify-between p-1.5 sm:p-2 bg-gray-100 border-b border-gray-300 shrink-0">
+                  <span className="font-semibold text-xs sm:text-sm">预览区</span>
+                  <button onClick={() => setIsCodeVisible(!isCodeVisible)} className="p-1 sm:p-1.5 text-gray-600 hover:bg-gray-200 rounded">
                     {isCodeVisible ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
                   </button>
                 </header>
