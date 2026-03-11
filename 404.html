@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loading...</title>
+    <script>
+      // Extract the path from the URL
+      var path = window.location.pathname;
+
+      // Remove the base path (/myCodepen) if present
+      var basePath = '/myCodepen';
+      var relativePath = path;
+
+      if (path.startsWith(basePath)) {
+        relativePath = path.substring(basePath.length);
+      }
+
+      // If we have a relative path, use hash routing
+      if (relativePath && relativePath !== '/') {
+        window.location.hash = relativePath;
+      } else {
+        // Redirect to index.html
+        window.location.href = '/myCodepen/';
+      }
+    </script>
+  </head>
+  <body>
+    <p>Redirecting...</p>
+  </body>
+</html>
