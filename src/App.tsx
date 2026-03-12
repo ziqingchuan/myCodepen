@@ -1,6 +1,6 @@
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navigation } from './components';
-import { ListPage, UploadPage, DetailPage, EditPage } from './pages';
+import { ListPage, CaseFormPage, DetailPage } from './pages';
 import './styles/index.css';
 
 function App() {
@@ -10,9 +10,9 @@ function App() {
         <Navigation />
         <Routes>
           <Route path="/" element={<ListPage />} />
-          <Route path="/upload" element={<UploadPage />} />
+          <Route path="/upload" element={<CaseFormPage />} />
           <Route path="/detail/:id" element={<DetailPage />} />
-          <Route path="/edit/:id" element={<EditPage />} />
+          <Route path="/edit/:id" element={<CaseFormPage />} />
         </Routes>
       </div>
     </Router>

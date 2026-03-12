@@ -13,7 +13,7 @@ export function debounce<T extends (...args: any[]) => any>(
 }
 
 /**
- * Generate HTML document string for iframe preview
+ * Generate HTML document string for iframe preview (React component only)
  */
 export function generatePreviewHTML(code: string): string {
   return `<!DOCTYPE html>
@@ -21,23 +21,63 @@ export function generatePreviewHTML(code: string): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Code Preview</title>
+  <title>React Preview</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-    }
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    #root { min-height: 100vh; }
   </style>
 </head>
 <body>
-  ${code}
+  <div id="root"></div>
+  <script type="text/babel" data-presets="react">
+    ${code}
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+
+    // 优先使用 App 或 Component
+    if (typeof App !== 'undefined') {
+      root.render(<App />);
+    } else if (typeof Component !== 'undefined') {
+      root.render(<Component />);
+    } else {
+      root.render(
+        <div style={{ padding: 20, color: '#ef4444', fontFamily: 'system-ui' }}>
+          请确保导出名为 App 或 Component 的组件
+        </div>
+      );
+    }
+  </script>
 </body>
 </html>`;
 }
+
+// 原有的 generatePreviewHTML 函数（已废弃，仅支持 HTML）
+// export function generatePreviewHTML(code: string): string {
+//   return `<!DOCTYPE html>
+// <html lang="en">
+// <head>
+//   <meta charset="UTF-8">
+//   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//   <title>Code Preview</title>
+//   <style>
+//     body {
+//       display: flex;
+//       align-items: center;
+//       justify-content: center;
+//       min-height: 100vh;
+//       margin: 0;
+//       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+//     }
+//   </style>
+// </head>
+// <body>
+//   ${code}
+// </body>
+// </html>`;
+// }
 
 /**
  * Copy text to clipboard

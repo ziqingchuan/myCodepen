@@ -1,18 +1,19 @@
 # Vibe CodePen - 简易前端交互案例平台
 
-一个基于 React + Vite 的轻量级前端交互案例分享平台，集成 Supabase 数据库，支持案例上传、预览、搜索和分页展示。
+一个基于 React + Vite 的轻量级前端交互案例分享平台，集成 Supabase 数据库，支持 React 组件代码的上传、预览、搜索和分页展示。
 
 ## 项目特性
 
-- 案例上传：支持 HTML/CSS/JavaScript 代码的上传和实时预览
-- 修改案例：支持在线编辑和更新已发布的案例
-- 删除案例：支持删除不再需要的案例
-- 搜索功能：快速搜索案例标题并实时筛选
-- 代码编辑：提供带缩进引导的代码编辑器
-- 响应式设计：基于 TailwindCSS 的现代化 UI 设计
-- 高性能预览：在 iframe 中实时渲染代码
-- 分页展示：支持快速分页导航
-- 数据持久化：使用 Supabase 存储和管理案例数据
+- **案例上传**：支持 React 组件代码的上传和实时预览
+- **修改案例**：支持在线编辑和更新已发布的案例
+- **删除案例**：支持删除不再需要的案例
+- **搜索功能**：快速搜索案例标题并实时筛选
+- **代码编辑**：提供带缩进引导的代码编辑器
+- **React 预览**：使用 Babel 实时编译渲染 React 组件
+- **响应式设计**：基于 TailwindCSS 的现代化 UI 设计
+- **手动刷新**：编辑代码后手动刷新预览，确保交互不被打断
+- **分页展示**：支持快速分页导航
+- **数据持久化**：使用 Supabase 存储和管理案例数据
 
 ## 技术栈
 
@@ -26,6 +27,7 @@
 | 路由 | react-router-dom 6.21+ |
 | 语言 | TypeScript 5.9+ |
 | 面板组件 | react-resizable-panels |
+| 编译器 | Babel Standalone |
 
 ## 快速开始
 
@@ -102,13 +104,12 @@ src/
 │   ├── Navigation.tsx       # 导航栏
 │   ├── Toast.tsx            # 提示通知
 │   ├── Loading.tsx          # 加载指示器
-│   ├── Pagination.tsx       # 分页控件
+│   ├── Pagination.tsx      # 分页控件
 │   └── index.ts             # 组件导出
 ├── pages/               # 页面组件
 │   ├── ListPage.tsx         # 案例列表页面
-│   ├── UploadPage.tsx       # 案例上传页面
+│   ├── CaseFormPage.tsx     # 案例表单页面（新增/编辑）
 │   ├── DetailPage.tsx       # 案例详情页面
-│   ├── EditPage.tsx         # 案例编辑页面
 │   └── index.ts             # 页面导出
 ├── services/            # 服务和 API
 │   ├── supabase.ts          # Supabase 客户端配置
@@ -134,24 +135,23 @@ src/
 - 支持删除案例
 - 支持编辑案例
 
-### 新增案例页 (`/upload`)
+### 新增/编辑案例页 (`/upload` 或 `/edit/:id`)
 
 - 标题输入（2-50 字）
-- 代码编辑区（支持 HTML/CSS/JS）
-- 实时预览区
-- 上传成功/失败提示
+- 代码编辑区（支持 React 函数组件）
+- 手动刷新预览
+- 代码规范提示（点击问号图标查看）
+- 发布/保存成功/失败提示
+
+**代码规范**：
+- 使用 React 函数组件
+- 导出组件名为 `App` 或 `Component`
+- 支持 React Hooks (useState, useEffect 等)
 
 ### 案例详情页 (`/detail/:id`)
 
 - 只读代码编辑器
 - 实时预览区
-
-### 案例编辑页 (`/edit/:id`)
-
-- 加载并编辑现有案例
-- 标题和代码均可修改
-- 实时预览更新
-- 更新成功/失败提示
 
 ## 浏览器兼容性
 
@@ -168,11 +168,18 @@ A: 检查 `.env` 文件中的 `VITE_SUPABASE_URL` 和 `VITE_SUPABASE_ANON_KEY` �
 
 ### Q: 代码预览失败
 
-A: 某些特定的 JavaScript 代码可能会因为安全限制（Content Security Policy）而无法执行。尝试简化代码或避免使用 `eval` 等危险操作。
+A: 确保代码符合 React 组件规范：
+- 导出组件名为 `App` 或 `Component`
+- 使用 React 函数组件语法
+- 正确使用 JSX 语法
 
 ### Q: 搜索不到已上传的案例
 
 A: 确保 Supabase 数据库中 `cases` 表已正确创建，并且已经插入了数据。
+
+### Q: 编辑时预览不更新
+
+A: 编辑代码后需要点击刷新按钮手动更新预览，这样可以确保交互不被打断。
 
 ---
 

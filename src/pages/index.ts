@@ -1,4 +1,4 @@
 export { ListPage } from './ListPage';
-export { UploadPage } from './UploadPage';
+export { CaseFormPage } from './CaseFormPage';
 export { DetailPage } from './DetailPage';
-export { EditPage } from './EditPage';
+
