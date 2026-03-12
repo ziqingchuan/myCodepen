@@ -6,7 +6,6 @@ interface CodeEditorProps {
   readOnly?: boolean;
 }
 
-// 计算缩进级别
 function getIndentLevel(line: string): number {
   let spaces = 0;
   for (const char of line) {
@@ -25,7 +24,6 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange, readOnly
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const indentRef = useRef<HTMLDivElement>(null);
 
-  // 同步滚动
   const handleScroll = () => {
     if (textareaRef.current && indentRef.current) {
       indentRef.current.scrollTop = textareaRef.current.scrollTop;
@@ -33,7 +31,6 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange, readOnly
     }
   };
 
-  // 处理 Tab 键
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Tab') {
       e.preventDefault();
@@ -51,17 +48,30 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange, readOnly
     }
   };
 
-  // 渲染缩进指示线
+  // 彩虹色数组
+  const rainbowColors = [
+    'border-red-500/50',
+    'border-orange-500/50',
+    'border-yellow-500/50',
+    'border-green-500/50',
+    'border-cyan-500/50',
+    'border-blue-500/50',
+    'border-purple-500/50',
+    'border-pink-500/50',
+  ];
+
+  const getRainbowColor = (index: number) => rainbowColors[index % rainbowColors.length];
+
   const indentGuideLines = useMemo(() => {
     const lines = code.split('\n');
     return lines.map((line, index) => {
       const indentLevel = getIndentLevel(line);
       return (
-        <div key={index} className="flex min-h-[1.5rem]">
+        <div key={index} className="flex min-h-[1.25rem] sm:min-h-[1.5rem]">
           {indentLevel > 0 && (
             <div className="flex pointer-events-none shrink-0" style={{ width: indentLevel * 20 }}>
               {Array.from({ length: indentLevel }).map((_, i) => (
-                <div key={i} className="w-5 border-l border-indigo-100" />
+                <div key={i} className={`w-[0.925rem] sm:w-[1.075rem] border-l ${getRainbowColor(i)}`} />
               ))}
             </div>
           )}
@@ -72,17 +82,15 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange, readOnly
   }, [code]);
 
   return (
-    <div className="h-[calc(100vh-120px)] overflow-hidden bg-white rounded-md border border-gray-300 relative">
-      {/* 缩进指示线层 */}
+    <div className="h-full overflow-hidden bg-dark-900 relative">
       <div
         ref={indentRef}
-        className="absolute inset-0 p-4 font-mono text-sm leading-6 whitespace-pre-wrap break-all overflow-hidden pointer-events-none"
-        style={{ fontFamily: '"Fira Code", "Fira Mono", monospace', fontSize: 14 }}
+        className="absolute inset-0 p-2 sm:p-4 font-mono text-xs sm:text-sm leading-5 sm:leading-6 whitespace-pre-wrap break-all overflow-hidden pointer-events-none text-dark-400"
+        style={{ fontFamily: '"Fira Code", "Fira Mono", monospace' }}
       >
         {indentGuideLines}
       </div>
 
-      {/* 编辑层 */}
       <textarea
         ref={textareaRef}
         value={code}
@@ -90,8 +98,8 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange, readOnly
         onScroll={handleScroll}
         onKeyDown={handleKeyDown}
         readOnly={readOnly}
-        className="absolute inset-0 w-full h-full p-4 font-mono text-sm leading-6 whitespace-pre-wrap break-all resize-none outline-none bg-transparent text-gray-800"
-        style={{ fontFamily: '"Fira Code", "Fira Mono", monospace', fontSize: 14 }}
+        className="absolute inset-0 w-full h-full p-2 sm:p-4 font-mono text-xs sm:text-sm leading-5 sm:leading-6 whitespace-pre overflow-x-auto resize-none outline-none bg-transparent text-dark-100 caret-primary"
+        style={{ fontFamily: '"Fira Code", "Fira Mono", monospace' }}
         spellCheck={false}
         placeholder="在此输入代码..."
       />

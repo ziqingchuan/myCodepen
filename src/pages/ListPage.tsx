@@ -4,7 +4,7 @@ import { Loading, Pagination, Toast, useToast } from '../components';
 import { caseService } from '../services/caseService';
 import type { Case } from '../types';
 import { formatDate, debounce, generatePreviewHTML } from '../utils/helpers';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, TrashIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 // 卡片预览组件
 const CardPreview: React.FC<{ code: string }> = ({ code }) => {
@@ -73,8 +73,8 @@ export const ListPage: React.FC = () => {
   };
 
   const handleDelete = async (e: React.MouseEvent, id: string) => {
-    e.stopPropagation(); // Prevent navigation
-    if (window.confirm('你确定要删除这个案例吗？')) {
+    e.stopPropagation();
+    if (window.confirm('确定删除这个案例吗？')) {
       try {
         await caseService.deleteCase(id);
         showToast('删除成功', 'success');
@@ -87,18 +87,21 @@ export const ListPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-dark-800">
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-8">
         {/* Search Bar */}
         <div className="mb-4 sm:mb-8">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            placeholder="搜索案例..."
-            className="w-full px-4 py-2 sm:py-3 text-base sm:text-lg border border-gray-300 rounded-lg sm:rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-          />
+          <div className="relative">
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-dark-300" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="搜索案例..."
+              className="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm sm:text-base bg-dark-700 border border-dark-500 rounded-xl text-dark-100 placeholder-dark-400 focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+            />
+          </div>
         </div>
 
         {/* Cases Grid */}
@@ -106,30 +109,34 @@ export const ListPage: React.FC = () => {
           <Loading text="加载中..." />
         ) : cases.length === 0 ? (
           <div className="text-center py-12 sm:py-16">
-            <p className="text-gray-500 text-base sm:text-xl">没有找到相关案例</p>
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-dark-700 flex items-center justify-center">
+              <MagnifyingGlassIcon className="w-8 h-8 text-dark-400" />
+            </div>
+            <p className="text-dark-300 text-base sm:text-xl">暂无案例，快去创建一个吧</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {cases.map((caseItem) => (
               <div
                 key={caseItem.id}
                 onClick={() => handleCaseClick(caseItem.id)}
-                className="group relative bg-white rounded-xl shadow-md overflow-hidden transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                className="group relative bg-dark-700 rounded-xl overflow-hidden cursor-pointer card-hover border border-dark-600 hover:border-primary/50"
               >
                 <button
                   onClick={(e) => handleDelete(e, caseItem.id)}
-                  className="absolute top-2 right-2 z-10 p-1.5 bg-white rounded-full text-gray-500 hover:bg-red-100 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-2 right-2 z-10 p-2 bg-dark-800/80 backdrop-blur rounded-lg text-dark-300 hover:text-danger hover:bg-danger/20 opacity-0 group-hover:opacity-100 transition-all"
+                  title="删除"
                 >
-                  <TrashIcon className="h-5 w-5" />
+                  <TrashIcon className="w-4 h-4" />
                 </button>
-                <div className="h-36 sm:h-48 bg-white overflow-hidden">
+                <div className="h-36 sm:h-44 bg-dark-900 overflow-hidden">
                   <CardPreview code={caseItem.code} />
                 </div>
-                <div className="p-3 sm:p-5">
-                  <h3 className="font-semibold text-base sm:text-lg text-gray-900 truncate mb-1 sm:mb-2">
+                <div className="p-3 sm:p-4">
+                  <h3 className="font-semibold text-sm sm:text-base text-dark-100 truncate mb-1">
                     {caseItem.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-gray-500">
+                  <p className="text-xs sm:text-sm text-dark-400">
                     {formatDate(caseItem.create_time)}
                   </p>
                   <button
@@ -137,9 +144,10 @@ export const ListPage: React.FC = () => {
                       e.stopPropagation();
                       navigate(`/edit/${caseItem.id}`);
                     }}
-                    className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 z-10 p-1 sm:p-1.5 bg-white rounded-full text-gray-500 hover:bg-blue-100 hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 z-10 p-1.5 sm:p-2 bg-dark-800/80 backdrop-blur rounded-lg text-dark-300 hover:text-primary hover:bg-primary/20 opacity-0 group-hover:opacity-100 transition-all"
+                    title="编辑"
                   >
-                    <PencilIcon className="h-4 sm:h-5 w-4 sm:w-5" />
+                    <PencilSquareIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                 </div>
               </div>

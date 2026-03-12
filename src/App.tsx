@@ -1,11 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navigation } from './components';
 import { ListPage, UploadPage, DetailPage, EditPage } from './pages';
 import './styles/index.css';
 
 function App() {
   return (
-    <Router basename="/myCodepen">
+    <Router>
       <div className="min-h-screen bg-gray-50">
         <Navigation />
         <Routes>

@@ -4,10 +4,13 @@ import { CodeEditor, PreviewArea, Toast, useToast, Loading } from '../components
 import { caseService } from '../services/caseService';
 import type { Case } from '../types';
 import { copyToClipboard } from '../utils/helpers';
-import { 
-  ClipboardDocumentIcon, 
-  EyeIcon, 
-  EyeSlashIcon, 
+import {
+  ClipboardDocumentIcon,
+  EyeIcon,
+  EyeSlashIcon,
+  ArrowLeftIcon,
+  PencilSquareIcon,
+  TrashIcon,
 } from '@heroicons/react/24/outline';
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
@@ -16,7 +19,7 @@ export const DetailPage: React.FC = () => {
   const navigate = useNavigate();
   const { toast, showToast, closeToast } = useToast();
 
-  const [caseData, setCaseData] = useState<Case | null>(null);
+  const [caseData, setCaseData] = useState< Case | null>(null);
   const [loading, setLoading] = useState(true);
   const [isCodeVisible, setIsCodeVisible] = useState(true);
   const [isPreviewVisible, setIsPreviewVisible] = useState(true);
@@ -51,7 +54,7 @@ export const DetailPage: React.FC = () => {
 
   const handleDelete = async () => {
     if (!caseData) return;
-    if (window.confirm('你确定要删除这个案例吗？')) {
+    if (window.confirm('确定删除这个案例吗？')) {
       try {
         await caseService.deleteCase(caseData.id);
         showToast('删除成功', 'success');
@@ -69,14 +72,17 @@ export const DetailPage: React.FC = () => {
 
   if (!caseData) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-dark-800 flex items-center justify-center p-4">
         <div className="text-center">
-          <p className="text-gray-600 text-base sm:text-xl">案例不存在或已被删除</p>
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-dark-700 flex items-center justify-center">
+            <span className="text-3xl">😕</span>
+          </div>
+          <p className="text-dark-300 text-base sm:text-xl mb-4">案例不存在或已被删除</p>
           <button
             onClick={() => navigate('/')}
-            className="mt-4 sm:mt-6 px-4 sm:px-6 py-2 text-sm sm:text-base bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
+            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/80 transition-all"
           >
-            返回列表
+            返回首页
           </button>
         </div>
       </div>
@@ -84,30 +90,33 @@ export const DetailPage: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className="flex flex-col h-screen bg-dark-800">
       {/* Header */}
-      <header className="flex items-center justify-between p-2 sm:p-4 bg-white border-b border-gray-200 gap-2">
-        <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+      <header className="flex items-center justify-between p-2 sm:p-3 bg-dark-700 border-b border-dark-500">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
           <button
             onClick={() => navigate('/')}
-            className="px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shrink-0"
+            className="p-2 rounded-lg text-dark-300 hover:text-primary hover:bg-dark-600 transition-all shrink-0"
+            title="返回"
           >
-            返回
+            <ArrowLeftIcon className="w-5 h-5" />
           </button>
-          <h1 className="text-base sm:text-xl font-bold truncate">{caseData.title}</h1>
+          <h1 className="font-semibold text-sm sm:text-base text-dark-100 truncate">{caseData.title}</h1>
         </div>
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           <button
             onClick={() => navigate(`/edit/${caseData.id}`)}
-            className="px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            className="p-2 rounded-lg text-dark-300 hover:text-primary hover:bg-dark-600 transition-all"
+            title="编辑"
           >
-            编辑
+            <PencilSquareIcon className="w-5 h-5" />
           </button>
           <button
             onClick={handleDelete}
-            className="px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            className="p-2 rounded-lg text-dark-300 hover:text-danger hover:bg-danger/20 transition-all"
+            title="删除"
           >
-            删除
+            <TrashIcon className="w-5 h-5" />
           </button>
         </div>
       </header>
@@ -118,14 +127,14 @@ export const DetailPage: React.FC = () => {
           {isCodeVisible && (
             <Panel defaultSize={50} minSize={10}>
               <div className="flex flex-col h-full">
-                <header className="flex items-center justify-between p-1.5 sm:p-2 bg-gray-100 border-b border-gray-300 shrink-0">
-                  <span className="font-semibold text-xs sm:text-sm">代码区</span>
+                <header className="flex items-center justify-between p-1.5 sm:p-2 bg-dark-700 border-b border-dark-500 shrink-0">
+                  <span className="font-semibold text-xs sm:text-sm text-dark-200">代码</span>
                   <div className="flex items-center gap-1 sm:gap-2">
-                    <button onClick={handleCopyCode} className="p-1 sm:p-1.5 text-gray-600 hover:bg-gray-200 rounded">
-                      <ClipboardDocumentIcon className="h-4 w-4" />
+                    <button onClick={handleCopyCode} className="p-1 sm:p-1.5 text-dark-300 hover:text-primary hover:bg-dark-600 rounded transition-all" title="复制">
+                      <ClipboardDocumentIcon className="w-4 h-4" />
                     </button>
-                    <button onClick={() => setIsPreviewVisible(!isPreviewVisible)} className="p-1 sm:p-1.5 text-gray-600 hover:bg-gray-200 rounded">
-                      {isPreviewVisible ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+                    <button onClick={() => setIsPreviewVisible(!isPreviewVisible)} className="p-1 sm:p-1.5 text-dark-300 hover:text-primary hover:bg-dark-600 rounded transition-all" title="预览">
+                      {isPreviewVisible ? <EyeSlashIcon className="w-4 h-4" /> : <EyeIcon className="w-4 h-4" />}
                     </button>
                   </div>
                 </header>
@@ -138,15 +147,15 @@ export const DetailPage: React.FC = () => {
             </Panel>
           )}
           {isCodeVisible && isPreviewVisible && (
-            <PanelResizeHandle className="w-1 sm:w-2 bg-gray-200 hover:bg-gray-300 cursor-col-resize transition-colors" />
+            <PanelResizeHandle className="w-1 sm:w-2 bg-dark-600 hover:bg-primary cursor-col-resize transition-colors" />
           )}
           {isPreviewVisible && (
             <Panel defaultSize={50} minSize={10}>
               <div className="flex flex-col h-full">
-                <header className="flex items-center justify-between p-1.5 sm:p-2 bg-gray-100 border-b border-gray-300 shrink-0">
-                  <span className="font-semibold text-xs sm:text-sm">预览区</span>
-                  <button onClick={() => setIsCodeVisible(!isCodeVisible)} className="p-1 sm:p-1.5 text-gray-600 hover:bg-gray-200 rounded">
-                    {isCodeVisible ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+                <header className="flex items-center justify-between p-1.5 sm:p-2 bg-dark-700 border-b border-dark-500 shrink-0">
+                  <span className="font-semibold text-xs sm:text-sm text-dark-200">预览</span>
+                  <button onClick={() => setIsCodeVisible(!isCodeVisible)} className="p-1 sm:p-1.5 text-dark-300 hover:text-primary hover:bg-dark-600 rounded transition-all" title="代码">
+                    {isCodeVisible ? <EyeSlashIcon className="w-4 h-4" /> : <EyeIcon className="w-4 h-4" />}
                   </button>
                 </header>
                 <PreviewArea code={caseData.code} />
@@ -156,7 +165,6 @@ export const DetailPage: React.FC = () => {
         </PanelGroup>
       </main>
 
-      {/* Toast Notification */}
       {toast && (
         <Toast
           message={toast.message}

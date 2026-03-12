@@ -6,7 +6,9 @@ import { validateTitle, validateCode, copyToClipboard } from '../utils/helpers';
 import {
   ClipboardDocumentIcon,
   EyeIcon,
-  EyeSlashIcon
+  EyeSlashIcon,
+  ArrowLeftIcon,
+  CheckIcon,
 } from '@heroicons/react/24/outline';
 import {
   Panel,
@@ -43,7 +45,6 @@ export const EditPage: React.FC = () => {
       try {
         const caseData = await caseService.getCaseById(id);
         setTitle(caseData.title);
-        // 如果 localStorage 没有保存的代码，则使用数据库的代码
         const savedCode = localStorage.getItem(STORAGE_KEY);
         const finalCode = savedCode || caseData.code;
         setCode(finalCode);
@@ -61,7 +62,6 @@ export const EditPage: React.FC = () => {
     fetchCase();
   }, [id, navigate, showToast]);
 
-  // 监听页面刷新/关闭，提示未保存
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (isInitialized) {
@@ -88,14 +88,13 @@ export const EditPage: React.FC = () => {
     setCode(newCode);
   };
 
-  // 防抖更新预览和本地存储
   useEffect(() => {
     if (!isInitialized) return;
 
     const timer = setTimeout(() => {
       setPreviewCode(code);
       localStorage.setItem(STORAGE_KEY, code);
-    }, 2000); // 增加到 2s，确保在内容变动后几秒才触发保存
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [code, isInitialized]);
@@ -141,7 +140,6 @@ export const EditPage: React.FC = () => {
 
     try {
       await caseService.updateCase(id, { title, code });
-      // 成功后清除 localStorage
       clearSavedCode();
       showToast('更新成功', 'success');
       setTimeout(() => navigate(`/detail/${id}`), 1000);
@@ -158,27 +156,26 @@ export const EditPage: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
-      <header className="flex items-center justify-between p-2 sm:p-4 bg-white border-b border-gray-200">
-        <h1 className="text-base sm:text-xl font-bold">编辑案例</h1>
-        <div className="flex items-center gap-2 sm:gap-4">
-          <button
-            onClick={() => {
-              clearSavedCode();
-              navigate(`/detail/${id}`);
-            }}
-            className="px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-          >
-            取消
-          </button>
-          <button
-            onClick={handleUpdate}
-            disabled={isUpdating || !!titleError || !!previewError}
-            className="px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:bg-gray-400"
-          >
-            {isUpdating ? '更新中...' : '保存'}
-          </button>
-        </div>
+    <div className="flex flex-col h-screen bg-dark-800">
+      <header className="flex items-center justify-between p-2 sm:p-3 bg-dark-700 border-b border-dark-500">
+        <button
+          onClick={() => {
+            clearSavedCode();
+            navigate(`/detail/${id}`);
+          }}
+          className="p-2 rounded-lg text-dark-300 hover:text-primary hover:bg-dark-600 transition-all"
+          title="取消"
+        >
+          <ArrowLeftIcon className="w-5 h-5" />
+        </button>
+        <button
+          onClick={handleUpdate}
+          disabled={isUpdating || !!titleError || !!previewError}
+          className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+        >
+          <CheckIcon className="w-4 h-4" />
+          {isUpdating ? '保存中...' : '保存'}
+        </button>
       </header>
 
       <main className="flex-1 p-2 sm:p-4 flex flex-col gap-2 sm:gap-4">
@@ -186,24 +183,24 @@ export const EditPage: React.FC = () => {
           type="text"
           value={title}
           onChange={handleTitleChange}
-          placeholder="请输入案例标题（2-50字）"
+          placeholder="输入案例标题..."
           maxLength={50}
-          className={`w-full px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 ${titleError ? 'border-red-500 ring-red-500' : 'border-gray-300 ring-blue-500'}`}
+          className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base bg-dark-700 border border-dark-500 rounded-lg text-dark-100 placeholder-dark-400 focus:border-primary focus:ring-1 focus:ring-primary"
         />
-        {titleError && <p className="text-red-500 text-xs sm:text-sm">{titleError}</p>}
+        {titleError && <p className="text-danger text-xs sm:text-sm">{titleError}</p>}
 
         <PanelGroup direction="horizontal" className="h-[calc(100vh-120px)] sm:h-[calc(100vh-140px)]">
           {isCodeVisible && (
             <Panel defaultSize={50} minSize={10}>
               <div className="flex flex-col h-full">
-                <header className="flex items-center justify-between p-1.5 sm:p-2 bg-gray-100 border-b border-gray-300 shrink-0">
-                  <span className="font-semibold text-xs sm:text-sm">代码区</span>
+                <header className="flex items-center justify-between p-1.5 sm:p-2 bg-dark-700 border-b border-dark-500 shrink-0">
+                  <span className="font-semibold text-xs sm:text-sm text-dark-200">代码</span>
                   <div className="flex items-center gap-1 sm:gap-2">
-                    <button onClick={handleCopyCode} className="p-1 sm:p-1.5 text-gray-600 hover:bg-gray-200 rounded">
-                      <ClipboardDocumentIcon className="h-4 w-4" />
+                    <button onClick={handleCopyCode} className="p-1 sm:p-1.5 text-dark-300 hover:text-primary hover:bg-dark-600 rounded transition-all" title="复制">
+                      <ClipboardDocumentIcon className="w-4 h-4" />
                     </button>
-                    <button onClick={() => setIsPreviewVisible(!isPreviewVisible)} className="p-1 sm:p-1.5 text-gray-600 hover:bg-gray-200 rounded">
-                      {isPreviewVisible ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+                    <button onClick={() => setIsPreviewVisible(!isPreviewVisible)} className="p-1 sm:p-1.5 text-dark-300 hover:text-primary hover:bg-dark-600 rounded transition-all" title="预览">
+                      {isPreviewVisible ? <EyeSlashIcon className="w-4 h-4" /> : <EyeIcon className="w-4 h-4" />}
                     </button>
                   </div>
                 </header>
@@ -212,15 +209,15 @@ export const EditPage: React.FC = () => {
             </Panel>
           )}
           {isCodeVisible && isPreviewVisible && (
-            <PanelResizeHandle className="w-1 sm:w-2 bg-gray-200 hover:bg-gray-300 cursor-col-resize" />
+            <PanelResizeHandle className="w-1 sm:w-2 bg-dark-600 hover:bg-primary cursor-col-resize transition-colors" />
           )}
           {isPreviewVisible && (
             <Panel defaultSize={50} minSize={10}>
               <div className="flex flex-col h-full">
-                <header className="flex items-center justify-between p-1.5 sm:p-2 bg-gray-100 border-b border-gray-300 shrink-0">
-                  <span className="font-semibold text-xs sm:text-sm">预览区</span>
-                  <button onClick={() => setIsCodeVisible(!isCodeVisible)} className="p-1 sm:p-1.5 text-gray-600 hover:bg-gray-200 rounded">
-                    {isCodeVisible ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+                <header className="flex items-center justify-between p-1.5 sm:p-2 bg-dark-700 border-b border-dark-500 shrink-0">
+                  <span className="font-semibold text-xs sm:text-sm text-dark-200">预览</span>
+                  <button onClick={() => setIsCodeVisible(!isCodeVisible)} className="p-1 sm:p-1.5 text-dark-300 hover:text-primary hover:bg-dark-600 rounded transition-all" title="代码">
+                    {isCodeVisible ? <EyeSlashIcon className="w-4 h-4" /> : <EyeIcon className="w-4 h-4" />}
                   </button>
                 </header>
                 <PreviewArea code={previewCode} onError={handlePreviewError} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { generatePreviewHTML } from '../utils/helpers';
 
 interface PreviewAreaProps {
@@ -7,48 +7,30 @@ interface PreviewAreaProps {
 }
 
 export const PreviewArea: React.FC<PreviewAreaProps> = ({ code, onError }) => {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
   const [hasError, setHasError] = useState(false);
 
-  useEffect(() => {
-    if (!iframeRef.current) return;
-
+  // 使用 srcdoc 替代 Blob URL，提高移动端兼容性
+  const srcdoc = useMemo(() => {
     try {
       setHasError(false);
       onError?.(null);
-
-      const htmlContent = generatePreviewHTML(code);
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-
-      iframeRef.current.src = url;
-
-      const handleIframeError = () => {
-        setHasError(true);
-        onError?.('预览失败：代码存在异常，请检查后重试');
-      };
-
-      iframeRef.current.addEventListener('error', handleIframeError);
-
-      return () => {
-        URL.revokeObjectURL(url);
-        iframeRef.current?.removeEventListener('error', handleIframeError);
-      };
+      return generatePreviewHTML(code);
     } catch (error) {
       setHasError(true);
       onError?.('预览失败：代码存在异常，请检查后重试');
+      return '';
     }
   }, [code, onError]);
 
   return (
-    <div className="h-[calc(100vh-120px)] overflow-hidden bg-white rounded-md border border-gray-300">
+    <div className="h-full overflow-hidden bg-dark-900 relative">
       {hasError ? (
         <div className="h-full flex items-center justify-center p-4">
-          <p className="text-red-500 font-medium text-center">预览失败：代码存在异常，请检查后重试</p>
+          <p className="text-red-400 font-medium text-center text-xs sm:text-sm">预览失败：代码存在异常，请检查后重试</p>
         </div>
       ) : (
         <iframe
-          ref={iframeRef}
+          srcDoc={srcdoc}
           title="code-preview"
           sandbox="allow-scripts allow-modals allow-forms allow-popups allow-same-origin"
           className="w-full h-full border-none"
