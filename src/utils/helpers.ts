@@ -26,6 +26,26 @@ export function generatePreviewHTML(code: string): string {
     reactCode = code.replace(/<style>[\s\S]*?<\/style>/, '');
   }
   
+  // 添加脚本以限制动画执行时间
+  const animationControlScript = `
+    // 3秒后停止所有动画
+    setTimeout(() => {
+      const elements = document.querySelectorAll('*');
+      elements.forEach(el => {
+        const style = window.getComputedStyle(el);
+        if (style.animation) {
+          el.style.animation = 'none';
+        }
+        if (style.animationName) {
+          el.style.animationName = 'none';
+        }
+        if (style.transition) {
+          el.style.transition = 'none';
+        }
+      });
+    }, 3000);
+  `;
+  
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,6 +80,9 @@ export function generatePreviewHTML(code: string): string {
         </div>
       );
     }
+  </script>
+  <script>
+    ${animationControlScript}
   </script>
 </body>
 </html>`;
