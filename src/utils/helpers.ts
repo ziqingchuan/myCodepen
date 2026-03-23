@@ -57,7 +57,7 @@ export function generatePreviewHTML(code: string): string {
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
     body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
-    #root { min-height: 100vh; }
+    #root { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
     ${cssContent}
   </style>
 </head>
