@@ -16,6 +16,16 @@ export function debounce<T extends (...args: any[]) => any>(
  * Generate HTML document string for iframe preview (React component only)
  */
 export function generatePreviewHTML(code: string): string {
+  // 检查是否包含 style 标签，如果有，提取并单独处理
+  let cssContent = '';
+  let reactCode = code;
+  
+  const styleMatch = code.match(/<style>([\s\S]*?)<\/style>/);
+  if (styleMatch) {
+    cssContent = styleMatch[1];
+    reactCode = code.replace(/<style>[\s\S]*?<\/style>/, '');
+  }
+  
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,12 +38,13 @@ export function generatePreviewHTML(code: string): string {
   <style>
     body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
     #root { min-height: 100vh; }
+    ${cssContent}
   </style>
 </head>
 <body>
   <div id="root"></div>
   <script type="text/babel" data-presets="react">
-    ${code}
+    ${reactCode}
 
     const root = ReactDOM.createRoot(document.getElementById('root'));
 
