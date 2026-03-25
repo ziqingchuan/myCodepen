@@ -9,14 +9,23 @@ import { PencilSquareIcon, TrashIcon, MagnifyingGlassIcon } from '@heroicons/rea
 // 卡片预览组件
 const CardPreview: React.FC<{ code: string }> = ({ code }) => {
   const htmlContent = useMemo(() => generatePreviewHTML(code), [code]);
+  const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <iframe
-      srcDoc={htmlContent}
-      title="preview"
-      sandbox="allow-scripts"
-      className="w-full h-full border-none pointer-events-none"
-    />
+    <div className="relative w-full h-full">
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-dark-900 z-10">
+          <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+      <iframe
+        srcDoc={htmlContent}
+        title="preview"
+        sandbox="allow-scripts"
+        className="w-full h-full border-none pointer-events-none"
+        onLoad={() => setIsLoading(false)}
+      />
+    </div>
   );
 };
 
